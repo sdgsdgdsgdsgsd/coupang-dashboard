@@ -19,15 +19,26 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 CHARTS_DIR = os.path.join(DATA_DIR, "charts")
 
-# 한글 폰트 설정 (시스템에 설치된 폰트 자동 탐색)
+# 한글 폰트 설정 — 파일 직접 등록 (시스템 캐시 불필요)
 def _setup_korean_font():
-    candidates = ["NanumGothic", "NanumBarunGothic", "Malgun Gothic", "AppleGothic", "DejaVu Sans"]
+    nanum_paths = [
+        "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
+        "/usr/share/fonts/truetype/nanum/NanumBarunGothic.ttf",
+        "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf",
+    ]
+    for path in nanum_paths:
+        if os.path.exists(path):
+            fm.fontManager.addfont(path)
+            prop = fm.FontProperties(fname=path)
+            plt.rcParams["font.family"] = prop.get_name()
+            return
+    # 시스템 폰트 탐색 폴백
+    candidates = ["NanumGothic", "NanumBarunGothic", "Malgun Gothic", "AppleGothic"]
     available = {f.name for f in fm.fontManager.ttflist}
     for font in candidates:
         if font in available:
             plt.rcParams["font.family"] = font
             return
-    plt.rcParams["font.family"] = "DejaVu Sans"
 
 _setup_korean_font()
 plt.rcParams["axes.unicode_minus"] = False
@@ -51,7 +62,6 @@ def chart_sentiment(report: dict, date_str: str) -> str:
         return ""
 
     channels, pos, neu, neg = [], [], [], []
-    sentiment_map = {"positive": "긍정", "neutral": "중립", "negative": "부정"}
 
     for ch in summaries:
         channels.append(ch["channel_name"])
@@ -124,7 +134,6 @@ def chart_top_keywords(report: dict, date_str: str) -> str:
     if not keywords_raw:
         return ""
 
-    # top_keywords가 {"word": count} dict 또는 [str, ...] list 모두 처리
     if isinstance(keywords_raw, dict):
         items = sorted(keywords_raw.items(), key=lambda x: x[1], reverse=True)[:10]
         words, counts = zip(*items) if items else ([], [])
