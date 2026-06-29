@@ -1,0 +1,18 @@
+# 구독 중인 부동산 유튜버 채널 목록
+# YouTube 채널 URL 또는 @핸들 형식으로 입력
+channels:
+  - name: "채널명1"
+    url: "https://www.youtube.com/@channel1"
+  - name: "채널명2"
+    url: "https://www.youtube.com/@channel2"
+  # 추가 채널은 아래에 계속 입력
+  # - name: "부동산 읽어주는 남자"
+  #   url: "https://www.youtube.com/@realestate_man"
+
+settings:
+  lookback_hours: 24          # 최근 N시간 이내 영상만 수집
+  max_videos_per_channel: 5   # 채널당 최대 영상 수
+  apify_actor: "streamers/youtube-scraper"
+  transcript_languages:
+    - "ko"
+    - "en"

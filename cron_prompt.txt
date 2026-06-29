@@ -1,0 +1,56 @@
+오늘의 부동산 유튜브 인사이트 분석 파이프라인을 실행합니다.
+
+작업 디렉토리: /home/user/coupang-dashboard
+
+**Step 1: YouTube 영상 크롤링**
+```
+cd /home/user/coupang-dashboard && python src/crawler.py
+```
+data/raw_videos_{오늘날짜YYYYMMDD}.json 파일이 생성되었는지 확인하세요.
+
+**Step 2: 자막 보강**
+```
+cd /home/user/coupang-dashboard && python src/transcript.py
+```
+
+**Step 3: 부동산 인사이트 분석**
+data/raw_videos_{오늘날짜}.json 파일을 읽고, 부동산 전문가 시각으로 아래 항목을 분석하세요:
+- key_insights: 오늘 유튜버들이 공통적으로 강조한 시장 인사이트 5~8개 (한국어 문장)
+- market_sentiment: { "overall": "positive"|"neutral"|"negative", "positive_ratio": 0.0~1.0, "neutral_ratio": ..., "negative_ratio": ..., "reasoning": "감성 판단 근거 2~3문장" }
+- topic_distribution: { "아파트": N, "재건축": N, "금리": N, "상가": N, "토지": N, "경매": N, "빌라": N, ... } (언급 빈도)
+- top_keywords: ["키워드1", "키워드2", ...] 또는 {"키워드": 빈도} — Top 10
+- risk_factors: 리스크 요인 3~5개 (한국어 문장)
+- investment_opportunities: 투자 기회 요인 3~5개 (한국어 문장)
+- policy_issues: 주목할 정책/이슈 2~3개 (한국어 문장)
+- channel_summaries: 채널별 요약 (채널명, videos 배열: title, url, views, summary(2문장), sentiment)
+- total_videos: 전체 영상 수 (정수)
+- channels_covered: 채널 수 (정수)
+- kakao_message: 200자 이내 카카오톡 요약 메시지 (아래 형식)
+
+카카오톡 메시지 형식 (200자 이내):
+[부동산 인사이트] MM/DD
+📺 채널 N개 영상 M개 분석
+🔑 핵심: [핵심 인사이트 1~2줄]
+📈 시장: [전체 감성 한 줄]
+⚠️ 리스크: [리스크 한 줄]
+📧 상세보고서 이메일 발송완료
+
+분석 결과를 data/report_{오늘날짜YYYYMMDD}.json 파일로 저장하세요.
+JSON 형식: { "date": "YYYYMMDD", "total_videos": N, "channels_covered": N, "key_insights": [...], "market_sentiment": {...}, "topic_distribution": {...}, "top_keywords": [...], "risk_factors": [...], "investment_opportunities": [...], "policy_issues": [...], "channel_summaries": [...], "kakao_message": "..." }
+
+**Step 4: 차트 생성**
+```
+cd /home/user/coupang-dashboard && python src/chart_gen.py
+```
+
+**Step 5: 이메일 발송**
+```
+cd /home/user/coupang-dashboard && python src/email_sender.py
+```
+
+**Step 6: 카카오톡 발송**
+report_{오늘날짜}.json의 "kakao_message" 필드 내용을 mcp__PlayMCP__KakaotalkChat-MemoChat 도구로 발송하세요.
+반드시 200자 이내인지 확인 후 발송합니다.
+
+모든 단계가 완료되면 "✅ 부동산 인사이트 리포트 발송 완료" 메시지를 출력하세요.
+오류가 발생한 경우 오류 내용을 기록하고 가능한 다음 단계를 계속 진행하세요.

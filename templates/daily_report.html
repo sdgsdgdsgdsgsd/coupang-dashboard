@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>부동산 유튜브 인사이트 {{ date }}</title>
+<style>
+  body { margin:0; padding:0; background:#F1F5F9; font-family: -apple-system, 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; }
+  .wrapper { max-width:680px; margin:0 auto; background:#F1F5F9; padding:20px 0 40px; }
+
+  /* HEADER */
+  .header { background:linear-gradient(135deg,#1E3A8A 0%,#2563EB 60%,#3B82F6 100%);
+            border-radius:16px; padding:32px 36px; margin-bottom:16px; }
+  .header h1 { margin:0 0 6px; color:#fff; font-size:22px; font-weight:700; }
+  .header .subtitle { color:#BFDBFE; font-size:13px; margin:0; }
+
+  /* STAT PILLS */
+  .stats { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+  .stat { background:#fff; border-radius:12px; padding:14px 20px; flex:1; min-width:120px;
+          box-shadow:0 1px 3px rgba(0,0,0,.08); text-align:center; }
+  .stat .num { font-size:26px; font-weight:800; color:#1E3A8A; display:block; }
+  .stat .label { font-size:11px; color:#6B7280; margin-top:2px; }
+
+  /* SECTION CARD */
+  .card { background:#fff; border-radius:14px; padding:24px 28px; margin-bottom:14px;
+          box-shadow:0 1px 4px rgba(0,0,0,.08); }
+  .card h2 { margin:0 0 16px; font-size:15px; font-weight:700; color:#111827;
+             border-left:4px solid #2563EB; padding-left:10px; }
+
+  /* INSIGHTS */
+  .insight-item { display:flex; gap:10px; align-items:flex-start; margin-bottom:10px; }
+  .insight-dot { width:8px; height:8px; background:#2563EB; border-radius:50%; margin-top:6px; flex-shrink:0; }
+  .insight-text { font-size:13.5px; color:#374151; line-height:1.6; }
+
+  /* SENTIMENT BADGE */
+  .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+  .badge-positive { background:#DCFCE7; color:#16A34A; }
+  .badge-neutral  { background:#FEF9C3; color:#CA8A04; }
+  .badge-negative { background:#FEE2E2; color:#DC2626; }
+
+  /* CHART */
+  .chart-img { width:100%; max-width:580px; display:block; margin:0 auto 10px;
+               border-radius:10px; border:1px solid #E5E7EB; }
+  .chart-label { font-size:11px; color:#9CA3AF; text-align:center; margin-bottom:20px; }
+
+  /* CHANNEL SUMMARY */
+  .channel-block { border:1px solid #E5E7EB; border-radius:10px; padding:16px 18px; margin-bottom:12px; }
+  .channel-name { font-size:13px; font-weight:700; color:#1E3A8A; margin-bottom:10px; }
+  .video-item { padding:8px 0; border-bottom:1px solid #F3F4F6; }
+  .video-item:last-child { border-bottom:none; padding-bottom:0; }
+  .video-title a { font-size:13px; color:#2563EB; text-decoration:none; font-weight:600; }
+  .video-title a:hover { text-decoration:underline; }
+  .video-meta { font-size:11px; color:#9CA3AF; margin:3px 0; }
+  .video-summary { font-size:12.5px; color:#4B5563; line-height:1.55; margin-top:4px; }
+
+  /* RISK / OPPORTUNITY */
+  .risk-item { background:#FFF7ED; border-left:3px solid #F97316; padding:8px 12px;
+               border-radius:0 6px 6px 0; margin-bottom:8px; font-size:13px; color:#374151; }
+  .opp-item  { background:#F0FDF4; border-left:3px solid #22C55E; padding:8px 12px;
+               border-radius:0 6px 6px 0; margin-bottom:8px; font-size:13px; color:#374151; }
+  .policy-item { background:#EFF6FF; border-left:3px solid #3B82F6; padding:8px 12px;
+                 border-radius:0 6px 6px 0; margin-bottom:8px; font-size:13px; color:#374151; }
+
+  /* FOOTER */
+  .footer { text-align:center; font-size:11px; color:#9CA3AF; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>📊 부동산 유튜브 인사이트</h1>
+    <p class="subtitle">{{ date_display }} &nbsp;|&nbsp; 자동 분석 리포트</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <span class="num">{{ total_videos }}</span>
+      <span class="label">분석 영상</span>
+    </div>
+    <div class="stat">
+      <span class="num">{{ channels_covered }}</span>
+      <span class="label">커버 채널</span>
+    </div>
+    <div class="stat">
+      <span class="num">
+        {% if market_sentiment.overall == 'positive' %}📈
+        {% elif market_sentiment.overall == 'negative' %}📉
+        {% else %}📊{% endif %}
+        {{ sentiment_label }}
+      </span>
+      <span class="label">전체 시장 감성</span>
+    </div>
+  </div>
+
+  <!-- KEY INSIGHTS -->
+  <div class="card">
+    <h2>🔑 오늘의 핵심 인사이트</h2>
+    {% for insight in key_insights %}
+    <div class="insight-item">
+      <div class="insight-dot"></div>
+      <div class="insight-text">{{ insight }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- CHART: SENTIMENT -->
+  {% if charts.sentiment %}
+  <div class="card">
+    <h2>📈 채널별 시장 감성 분석</h2>
+    <img class="chart-img" src="data:image/png;base64,{{ charts.sentiment }}" alt="시장 감성 차트">
+    <div class="chart-label">채널별 긍정 / 중립 / 부정 비율</div>
+    <div style="font-size:13px;color:#4B5563;line-height:1.6;">{{ market_sentiment.reasoning }}</div>
+  </div>
+  {% endif %}
+
+  <!-- CHART: TOPIC -->
+  {% if charts.topic %}
+  <div class="card">
+    <h2>📊 오늘의 주제 분포</h2>
+    <img class="chart-img" src="data:image/png;base64,{{ charts.topic }}" alt="주제 분포 차트">
+    <div class="chart-label">언급 주제 카테고리 비율</div>
+  </div>
+  {% endif %}
+
+  <!-- CHART: KEYWORDS -->
+  {% if charts.keywords %}
+  <div class="card">
+    <h2>🔤 핵심 키워드 Top 10</h2>
+    <img class="chart-img" src="data:image/png;base64,{{ charts.keywords }}" alt="키워드 차트">
+    <div class="chart-label">오늘 유튜버들이 가장 많이 언급한 키워드</div>
+  </div>
+  {% endif %}
+
+  <!-- CHART: VIDEOS PER CHANNEL -->
+  {% if charts.videos_per_channel %}
+  <div class="card">
+    <h2>📺 채널별 신규 영상 수</h2>
+    <img class="chart-img" src="data:image/png;base64,{{ charts.videos_per_channel }}" alt="채널별 영상 수 차트">
+  </div>
+  {% endif %}
+
+  <!-- CHANNEL SUMMARIES -->
+  <div class="card">
+    <h2>📺 채널별 영상 요약</h2>
+    {% for ch in channel_summaries %}
+    <div class="channel-block">
+      <div class="channel-name">{{ ch.channel_name }}</div>
+      {% for video in ch.videos %}
+      <div class="video-item">
+        <div class="video-title">
+          <a href="{{ video.url }}" target="_blank">{{ video.title }}</a>
+          &nbsp;
+          {% if video.sentiment == 'positive' %}<span class="badge badge-positive">긍정</span>
+          {% elif video.sentiment == 'negative' %}<span class="badge badge-negative">부정</span>
+          {% else %}<span class="badge badge-neutral">중립</span>{% endif %}
+        </div>
+        {% if video.views %}<div class="video-meta">조회수 {{ "{:,}".format(video.views) }}회</div>{% endif %}
+        {% if video.summary %}<div class="video-summary">{{ video.summary }}</div>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- RISK / OPPORTUNITY / POLICY -->
+  <div class="card">
+    <h2>⚠️ 주목 리스크 & 투자 기회</h2>
+
+    {% if risk_factors %}
+    <div style="font-size:12px;font-weight:700;color:#F97316;margin-bottom:6px;">리스크 요인</div>
+    {% for item in risk_factors %}
+    <div class="risk-item">{{ item }}</div>
+    {% endfor %}
+    <div style="margin-bottom:14px;"></div>
+    {% endif %}
+
+    {% if investment_opportunities %}
+    <div style="font-size:12px;font-weight:700;color:#16A34A;margin-bottom:6px;">투자 기회</div>
+    {% for item in investment_opportunities %}
+    <div class="opp-item">{{ item }}</div>
+    {% endfor %}
+    <div style="margin-bottom:14px;"></div>
+    {% endif %}
+
+    {% if policy_issues %}
+    <div style="font-size:12px;font-weight:700;color:#2563EB;margin-bottom:6px;">주목 정책/이슈</div>
+    {% for item in policy_issues %}
+    <div class="policy-item">{{ item }}</div>
+    {% endfor %}
+    {% endif %}
+  </div>
+
+  <div class="footer">
+    자동 생성된 분석 리포트입니다 · {{ date_display }} · Claude AI 분석
+  </div>
+
+</div>
+</body>
+</html>
