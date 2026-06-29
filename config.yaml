@@ -3,9 +3,8 @@
 channels:
   - name: "더라이터송"
     url: "https://www.youtube.com/@thewriter-song"
-  # 추가 구독 채널을 아래에 입력하세요
-  # - name: "채널명"
-  #   url: "https://www.youtube.com/@handle"
+  - name: "부익남TV"
+    url: "https://www.youtube.com/@buiknam_tv"
 
 settings:
   lookback_hours: 24          # 최근 N시간 이내 영상만 수집

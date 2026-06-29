@@ -68,7 +68,7 @@ def crawl_channel(client: ApifyClient, channel: dict, config: dict) -> list[dict
 
     print(f"  [{channel['name']}] Apify 실행 중...")
     try:
-        run = client.actor(actor_id).call(run_input=run_input, timeout_secs=180)
+        run = client.actor(actor_id).call(run_input=run_input)
     except Exception as e:
         print(f"  [{channel['name']}] 오류: {e}")
         return []
