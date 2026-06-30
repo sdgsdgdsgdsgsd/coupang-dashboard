@@ -73,7 +73,9 @@ def crawl_channel(client: ApifyClient, channel: dict, config: dict) -> list[dict
         print(f"  [{channel['name']}] 오류: {e}")
         return []
 
-    items = list(client.dataset(run["defaultDatasetId"]).iterate_items())
+    # apify-client >= 1.0 returns a Run object; older versions return a dict
+    dataset_id = run["defaultDatasetId"] if isinstance(run, dict) else run.default_dataset_id
+    items = list(client.dataset(dataset_id).iterate_items())
     recent_videos = []
     for item in items:
         upload_date = item.get("uploadDate") or item.get("publishedAt") or ""
