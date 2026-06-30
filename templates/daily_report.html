@@ -78,12 +78,13 @@
   <div class="stats">
     <div class="stat">
       <span class="num">{{ total_videos }}</span>
-      <span class="label">분석 영상</span>
+      <span class="label">신규 영상</span>
     </div>
     <div class="stat">
       <span class="num">{{ channels_covered }}</span>
       <span class="label">커버 채널</span>
     </div>
+    {% if market_sentiment and market_sentiment.overall %}
     <div class="stat">
       <span class="num">
         {% if market_sentiment.overall == 'positive' %}📈
@@ -93,9 +94,11 @@
       </span>
       <span class="label">전체 시장 감성</span>
     </div>
+    {% endif %}
   </div>
 
   <!-- KEY INSIGHTS -->
+  {% if key_insights %}
   <div class="card">
     <h2>🔑 오늘의 핵심 인사이트</h2>
     {% for insight in key_insights %}
@@ -105,6 +108,7 @@
     </div>
     {% endfor %}
   </div>
+  {% endif %}
 
   <!-- CHART: SENTIMENT -->
   {% if charts.sentiment %}
@@ -152,10 +156,10 @@
       <div class="video-item">
         <div class="video-title">
           <a href="{{ video.url }}" target="_blank">{{ video.title }}</a>
-          &nbsp;
-          {% if video.sentiment == 'positive' %}<span class="badge badge-positive">긍정</span>
-          {% elif video.sentiment == 'negative' %}<span class="badge badge-negative">부정</span>
-          {% else %}<span class="badge badge-neutral">중립</span>{% endif %}
+          {% if video.sentiment == 'positive' %}&nbsp;<span class="badge badge-positive">긍정</span>
+          {% elif video.sentiment == 'negative' %}&nbsp;<span class="badge badge-negative">부정</span>
+          {% elif video.sentiment == 'neutral' %}&nbsp;<span class="badge badge-neutral">중립</span>
+          {% endif %}
         </div>
         {% if video.views %}<div class="video-meta">조회수 {{ "{:,}".format(video.views) }}회</div>{% endif %}
         {% if video.summary %}<div class="video-summary">{{ video.summary }}</div>{% endif %}
@@ -194,7 +198,7 @@
   </div>
 
   <div class="footer">
-    자동 생성된 분석 리포트입니다 · {{ date_display }} · Claude AI 분석
+    자동 생성된 리포트 · {{ date_display }}
   </div>
 
 </div>

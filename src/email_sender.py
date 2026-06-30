@@ -1,5 +1,5 @@
 """
-Gmail SMTP 이메일 발송 — report_{date}.json + charts → HTML 이메일 전송
+Gmail SMTP 이메일 발송 — raw_videos_{date}.json → HTML 이메일 전송
 """
 
 import json
@@ -27,48 +27,61 @@ RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL", GMAIL_USER)
 SMTP_HOST = "smtp.gmail.com"
 SMTP_PORT = 587
 
-SENTIMENT_LABELS = {
-    "positive": "긍정 (상승 분위기)",
-    "neutral": "중립 (관망세)",
-    "negative": "부정 (하락 우려)",
-}
 
-
-def load_report(date_str: str) -> dict:
-    path = os.path.join(DATA_DIR, f"report_{date_str}.json")
+def load_raw_videos(date_str: str) -> dict:
+    path = os.path.join(DATA_DIR, f"raw_videos_{date_str}.json")
     if not os.path.exists(path):
-        raise FileNotFoundError(f"리포트 없음: {path}")
+        raise FileNotFoundError(f"크롤링 결과 없음: {path}")
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
-def render_html(report: dict) -> str:
+def build_channel_summaries(videos: list[dict]) -> list[dict]:
+    channels: dict[str, dict] = {}
+    for v in videos:
+        cname = v.get("channel_name", "Unknown")
+        if cname not in channels:
+            channels[cname] = {"channel_name": cname, "videos": []}
+        snippet = (v.get("description") or v.get("transcript") or "")[:200]
+        channels[cname]["videos"].append(
+            {
+                "title": v.get("title", ""),
+                "url": v.get("url", ""),
+                "views": v.get("views", 0),
+                "summary": snippet,
+                "sentiment": None,
+            }
+        )
+    return list(channels.values())
+
+
+def render_html(raw: dict) -> str:
     env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
     template = env.get_template("daily_report.html")
 
-    date_str = report.get("date", datetime.now().strftime("%Y%m%d"))
+    date_str = raw.get("date", datetime.now().strftime("%Y%m%d"))
     try:
         dt = datetime.strptime(date_str, "%Y%m%d")
         date_display = dt.strftime("%Y년 %m월 %d일")
     except ValueError:
         date_display = date_str
 
-    sentiment = report.get("market_sentiment", {})
-    overall = sentiment.get("overall", "neutral")
+    videos = raw.get("videos", [])
+    channel_names = {v.get("channel_name") for v in videos}
 
     return template.render(
         date=date_str,
         date_display=date_display,
-        total_videos=report.get("total_videos", 0),
-        channels_covered=report.get("channels_covered", 0),
-        market_sentiment=sentiment,
-        sentiment_label=SENTIMENT_LABELS.get(overall, overall),
-        key_insights=report.get("key_insights", []),
-        channel_summaries=report.get("channel_summaries", []),
-        risk_factors=report.get("risk_factors", []),
-        investment_opportunities=report.get("investment_opportunities", []),
-        policy_issues=report.get("policy_issues", []),
-        charts=report.get("charts", {}),
+        total_videos=raw.get("total_videos", len(videos)),
+        channels_covered=len(channel_names),
+        market_sentiment={},
+        sentiment_label="",
+        key_insights=[],
+        channel_summaries=build_channel_summaries(videos),
+        risk_factors=[],
+        investment_opportunities=[],
+        policy_issues=[],
+        charts={},
     )
 
 
@@ -78,9 +91,9 @@ def send_email(html_content: str, date_str: str) -> None:
 
     try:
         dt = datetime.strptime(date_str, "%Y%m%d")
-        subject = f"[부동산 인사이트] {dt.strftime('%Y/%m/%d')} 유튜브 분석 리포트"
+        subject = f"[부동산 인사이트] {dt.strftime('%Y/%m/%d')} 유튜브 신규 영상 리포트"
     except ValueError:
-        subject = f"[부동산 인사이트] {date_str} 유튜브 분석 리포트"
+        subject = f"[부동산 인사이트] {date_str} 유튜브 신규 영상 리포트"
 
     msg = MIMEMultipart("alternative")
     msg["From"] = GMAIL_USER
@@ -102,11 +115,11 @@ def run_email_sender(date_str: str | None = None, test_mode: bool = False) -> No
     if date_str is None:
         date_str = datetime.now().strftime("%Y%m%d")
 
-    print(f"리포트 로드: {date_str}")
-    report = load_report(date_str)
+    print(f"크롤링 결과 로드: {date_str}")
+    raw = load_raw_videos(date_str)
 
     print("HTML 렌더링 중...")
-    html = render_html(report)
+    html = render_html(raw)
 
     if test_mode:
         out = os.path.join(DATA_DIR, f"email_preview_{date_str}.html")

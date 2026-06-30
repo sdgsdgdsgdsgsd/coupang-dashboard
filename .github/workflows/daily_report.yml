@@ -38,15 +38,10 @@ jobs:
       - name: Step 2 — 자막 수집
         run: python src/transcript.py
 
-      - name: Step 3 — Claude AI 분석
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python src/analyzer.py
-
-      - name: Step 4 — 인포그래픽 차트 생성
+      - name: Step 3 — 인포그래픽 차트 생성
         run: python src/chart_gen.py
 
-      - name: Step 5 — Gmail 이메일 발송
+      - name: Step 4 — Gmail 이메일 발송
         env:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
