@@ -63,7 +63,6 @@ def crawl_channel(client: ApifyClient, channel: dict, config: dict) -> list[dict
     run_input = {
         "startUrls": [{"url": channel["url"]}],
         "maxResults": max_videos * 3,  # 필터 후 충분한 수 확보
-        "type": "CHANNEL",
     }
 
     print(f"  [{channel['name']}] Apify 실행 중...")
@@ -76,9 +75,22 @@ def crawl_channel(client: ApifyClient, channel: dict, config: dict) -> list[dict
     # apify-client >= 1.0 returns a Run object; older versions return a dict
     dataset_id = run["defaultDatasetId"] if isinstance(run, dict) else run.default_dataset_id
     items = list(client.dataset(dataset_id).iterate_items())
+
+    if items:
+        print(f"  [{channel['name']}] 첫 항목 키: {list(items[0].keys())}")
+        print(f"  [{channel['name']}] date={items[0].get('date')}, uploadDate={items[0].get('uploadDate')}, publishedAt={items[0].get('publishedAt')}")
+    else:
+        print(f"  [{channel['name']}] Apify 결과 0건 (채널 URL 또는 액터 설정 확인 필요)")
+
     recent_videos = []
     for item in items:
-        upload_date = item.get("uploadDate") or item.get("publishedAt") or ""
+        upload_date = (
+            item.get("date")
+            or item.get("uploadDate")
+            or item.get("publishedAt")
+            or item.get("datePublished")
+            or ""
+        )
         if is_within_lookback(upload_date, lookback_hours):
             video_id = extract_video_id(item.get("url", "") or item.get("id", ""))
             recent_videos.append(
