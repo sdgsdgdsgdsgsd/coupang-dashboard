@@ -102,7 +102,7 @@ def crawl_channel(client: ApifyClient, channel: dict, config: dict) -> list[dict
 
 def run_crawler() -> str:
     """전체 채널 크롤링 후 JSON 저장. 저장된 파일 경로 반환."""
-    api_token = os.getenv("APIFY_API_TOKEN")
+    api_token = os.getenv("APIFY_API_TOKEN", "").strip()
     if not api_token:
         raise EnvironmentError("APIFY_API_TOKEN 환경변수가 설정되지 않았습니다.")
 

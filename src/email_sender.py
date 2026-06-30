@@ -36,6 +36,14 @@ def load_raw_videos(date_str: str) -> dict:
         return json.load(f)
 
 
+def load_charts(date_str: str) -> dict:
+    charts_path = os.path.join(DATA_DIR, f"charts_{date_str}.json")
+    if os.path.exists(charts_path):
+        with open(charts_path, "r", encoding="utf-8") as f:
+            return json.load(f).get("charts", {})
+    return {}
+
+
 def build_channel_summaries(videos: list[dict]) -> list[dict]:
     channels: dict[str, dict] = {}
     for v in videos:
@@ -81,7 +89,7 @@ def render_html(raw: dict) -> str:
         risk_factors=[],
         investment_opportunities=[],
         policy_issues=[],
-        charts={},
+        charts=load_charts(date_str),
     )
 
 

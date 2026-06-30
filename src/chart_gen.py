@@ -193,18 +193,33 @@ def chart_videos_per_channel(report: dict, date_str: str) -> str:
 
 def generate_all_charts(date_str: str | None = None) -> dict[str, str]:
     """
-    report_{date}.json을 읽어 모든 차트를 생성하고
-    {chart_name: base64_png} 딕셔너리를 반환 + 파일로도 저장.
+    raw_videos_{date}.json을 읽어 모든 차트를 생성하고
+    {chart_name: base64_png} 딕셔너리를 반환 + charts_{date}.json에 저장.
     """
     if date_str is None:
         date_str = datetime.now().strftime("%Y%m%d")
 
-    report_path = os.path.join(DATA_DIR, f"report_{date_str}.json")
-    if not os.path.exists(report_path):
-        raise FileNotFoundError(f"리포트 파일 없음: {report_path}")
+    raw_path = os.path.join(DATA_DIR, f"raw_videos_{date_str}.json")
+    if not os.path.exists(raw_path):
+        raise FileNotFoundError(f"크롤링 결과 없음: {raw_path}")
 
-    with open(report_path, "r", encoding="utf-8") as f:
-        report = json.load(f)
+    with open(raw_path, "r", encoding="utf-8") as f:
+        raw = json.load(f)
+
+    # Build channel_summaries from raw videos for chart functions
+    channels_map: dict[str, list] = {}
+    for v in raw.get("videos", []):
+        cname = v.get("channel_name", "Unknown")
+        if cname not in channels_map:
+            channels_map[cname] = []
+        channels_map[cname].append(v)
+
+    report = {
+        "channel_summaries": [
+            {"channel_name": name, "videos": vids}
+            for name, vids in channels_map.items()
+        ]
+    }
 
     os.makedirs(CHARTS_DIR, exist_ok=True)
 
@@ -225,10 +240,10 @@ def generate_all_charts(date_str: str | None = None) -> dict[str, str]:
             with open(out_path, "w") as f:
                 f.write(b64)
 
-    # report에 charts 필드 추가해 저장 (email_sender가 직접 참조)
-    report["charts"] = charts
-    with open(report_path, "w", encoding="utf-8") as f:
-        json.dump(report, f, ensure_ascii=False, indent=2)
+    # Save charts index for email_sender.py
+    charts_path = os.path.join(DATA_DIR, f"charts_{date_str}.json")
+    with open(charts_path, "w", encoding="utf-8") as f:
+        json.dump({"charts": charts}, f, ensure_ascii=False)
 
     print(f"차트 생성 완료: {len(charts)}개")
     return charts
