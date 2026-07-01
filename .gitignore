@@ -1,5 +1,6 @@
 .env
 data/
+!data/raw_videos_*.json
 __pycache__/
 *.pyc
 *.pyo
