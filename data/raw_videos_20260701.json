@@ -1,7 +1,7 @@
 {
-  "crawled_at": "2026-07-01T13:55:13.369153",
+  "crawled_at": "2026-07-01T23:14:43.767318",
   "date": "20260701",
-  "total_videos": 7,
+  "total_videos": 8,
   "videos": [
     {
       "channel_name": "더라이터송",
@@ -11,7 +11,19 @@
       "url": "https://www.youtube.com/watch?v=j6P84QR8IMI",
       "upload_date": "2026-06-30T08:18:11.000Z",
       "views": null,
-      "likes": 38,
+      "likes": 40,
+      "description": "",
+      "transcript": ""
+    },
+    {
+      "channel_name": "더라이터송",
+      "channel_url": "https://www.youtube.com/@thewriter-song",
+      "video_id": "yZl_s7hKMwE",
+      "title": "조금이라도 더 좋은 선택을 하는 법",
+      "url": "https://www.youtube.com/watch?v=yZl_s7hKMwE",
+      "upload_date": "2026-07-01T22:45:03.000Z",
+      "views": 2311,
+      "likes": 102,
       "description": "",
       "transcript": ""
     },
@@ -22,32 +34,8 @@
       "title": "노원구 월세 100만원 시대",
       "url": "https://www.youtube.com/watch?v=ty9bY5lVyFE",
       "upload_date": "2026-06-30T22:47:13.000Z",
-      "views": 47267,
-      "likes": 856,
-      "description": "",
-      "transcript": ""
-    },
-    {
-      "channel_name": "부익남TV",
-      "channel_url": "https://www.youtube.com/@buiknam_tv",
-      "video_id": "49GRr9bSEtw",
-      "title": "EP16. 양천구 입지 분석 및 투자 가이드",
-      "url": "https://www.youtube.com/watch?v=49GRr9bSEtw",
-      "upload_date": "2026-06-29T00:04:31.000Z",
-      "views": null,
-      "likes": 1,
-      "description": "",
-      "transcript": ""
-    },
-    {
-      "channel_name": "부익남TV",
-      "channel_url": "https://www.youtube.com/@buiknam_tv",
-      "video_id": "IJ9gA-H8Mfc",
-      "title": "언론은 '이걸' 보도 안해요, 지금 부동산 시장 이렇습니다 [박원갑 위원 풀버전]",
-      "url": "https://www.youtube.com/watch?v=IJ9gA-H8Mfc",
-      "upload_date": "2026-06-29T08:00:12.000Z",
-      "views": 26307,
-      "likes": 419,
+      "views": 52469,
+      "likes": 900,
       "description": "",
       "transcript": ""
     },
@@ -70,8 +58,20 @@
       "title": "\"도저히 막을 수 없습니다\" 집값 상승하는 진짜 이유 [김준영 소장 1부]",
       "url": "https://www.youtube.com/watch?v=Ipkmml0hiis",
       "upload_date": "2026-06-30T10:00:19.000Z",
-      "views": 53096,
-      "likes": 588,
+      "views": 54199,
+      "likes": 602,
+      "description": "",
+      "transcript": ""
+    },
+    {
+      "channel_name": "부익남TV",
+      "channel_url": "https://www.youtube.com/@buiknam_tv",
+      "video_id": "xMLj9V4NxH4",
+      "title": "\"전문가들이 이걸 말 안해요\" 7월 이후 한국 증시 이렇게 됩니다 [홍춘욱 대표 풀버전]",
+      "url": "https://www.youtube.com/watch?v=xMLj9V4NxH4",
+      "upload_date": "2026-06-29T10:00:02.000Z",
+      "views": 144755,
+      "likes": 2400,
       "description": "",
       "transcript": ""
     },
@@ -82,8 +82,20 @@
       "title": "심상치 않은 비트코인 급락, 팔아야 하나 고민되면 보세요 [강승구 부대표 1부]",
       "url": "https://www.youtube.com/watch?v=sSDp2Z3mAW4",
       "upload_date": "2026-07-01T10:00:26.000Z",
-      "views": 5500,
-      "likes": 190,
+      "views": 14585,
+      "likes": 297,
+      "description": "",
+      "transcript": ""
+    },
+    {
+      "channel_name": "부익남TV",
+      "channel_url": "https://www.youtube.com/@buiknam_tv",
+      "video_id": "K1WlIXGQyFQ",
+      "title": "한국 증시가 심상치 않다? 7월 이후 시장 솔직히 말씀드립니다 [이영훈 이사 1부]",
+      "url": "https://www.youtube.com/watch?v=K1WlIXGQyFQ",
+      "upload_date": "2026-06-30T11:00:11.000Z",
+      "views": 49132,
+      "likes": 624,
       "description": "",
       "transcript": ""
     }
