@@ -44,13 +44,31 @@ def load_charts(date_str: str) -> dict:
     return {}
 
 
-def build_channel_summaries(videos: list[dict]) -> list[dict]:
+def load_report(date_str: str) -> dict:
+    path = os.path.join(DATA_DIR, f"report_{date_str}.json")
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+
+def build_channel_summaries(videos: list[dict], report: dict) -> list[dict]:
+    """AI 분석 리포트를 우선 사용, 없으면 raw 데이터 폴백."""
+    if report.get("channel_summaries"):
+        # AI 채널 요약에 실제 views 보완
+        views_by_url = {v.get("url", ""): v.get("views", 0) for v in videos}
+        for ch in report["channel_summaries"]:
+            for vid in ch.get("videos", []):
+                if not vid.get("views"):
+                    vid["views"] = views_by_url.get(vid.get("url", ""), 0)
+        return report["channel_summaries"]
+
     channels: dict[str, dict] = {}
     for v in videos:
         cname = v.get("channel_name", "Unknown")
         if cname not in channels:
             channels[cname] = {"channel_name": cname, "videos": []}
-        snippet = (v.get("description") or v.get("transcript") or "")[:200]
+        snippet = (v.get("transcript") or v.get("description") or "")[:200]
         channels[cname]["videos"].append(
             {
                 "title": v.get("title", ""),
@@ -75,20 +93,24 @@ def render_html(raw: dict) -> str:
         date_display = date_str
 
     videos = raw.get("videos", [])
-    channel_names = {v.get("channel_name") for v in videos}
+    report = load_report(date_str)
+
+    market_sentiment = report.get("market_sentiment", {})
+    sentiment_map = {"positive": "긍정", "neutral": "중립", "negative": "부정"}
+    sentiment_label = sentiment_map.get(market_sentiment.get("overall", ""), "")
 
     return template.render(
         date=date_str,
         date_display=date_display,
-        total_videos=raw.get("total_videos", len(videos)),
-        channels_covered=len(channel_names),
-        market_sentiment={},
-        sentiment_label="",
-        key_insights=[],
-        channel_summaries=build_channel_summaries(videos),
-        risk_factors=[],
-        investment_opportunities=[],
-        policy_issues=[],
+        total_videos=report.get("total_videos", raw.get("total_videos", len(videos))),
+        channels_covered=report.get("channels_covered", len({v.get("channel_name") for v in videos})),
+        market_sentiment=market_sentiment,
+        sentiment_label=sentiment_label,
+        key_insights=report.get("key_insights", []),
+        channel_summaries=build_channel_summaries(videos, report),
+        risk_factors=report.get("risk_factors", []),
+        investment_opportunities=report.get("investment_opportunities", []),
+        policy_issues=report.get("policy_issues", []),
         charts=load_charts(date_str),
     )
 

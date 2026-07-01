@@ -206,7 +206,15 @@ def generate_all_charts(date_str: str | None = None) -> dict[str, str]:
     with open(raw_path, "r", encoding="utf-8") as f:
         raw = json.load(f)
 
-    # Build channel_summaries from raw videos for chart functions
+    # AI 분석 리포트 로드 (topic/keyword 차트에 사용)
+    report_path = os.path.join(DATA_DIR, f"report_{date_str}.json")
+    if os.path.exists(report_path):
+        with open(report_path, "r", encoding="utf-8") as f:
+            report = json.load(f)
+    else:
+        report = {}
+
+    # channel_summaries from raw videos (sentiment/videos_per_channel 차트용)
     channels_map: dict[str, list] = {}
     for v in raw.get("videos", []):
         cname = v.get("channel_name", "Unknown")
@@ -214,20 +222,18 @@ def generate_all_charts(date_str: str | None = None) -> dict[str, str]:
             channels_map[cname] = []
         channels_map[cname].append(v)
 
-    report = {
-        "channel_summaries": [
+    if not report.get("channel_summaries"):
+        report["channel_summaries"] = [
             {"channel_name": name, "videos": vids}
             for name, vids in channels_map.items()
         ]
-    }
 
     os.makedirs(CHARTS_DIR, exist_ok=True)
 
+    # sentiment와 videos_per_channel 차트 제거 — 이메일에서 사용 안 함
     generators = {
-        "sentiment": chart_sentiment,
         "topic": chart_topic_distribution,
         "keywords": chart_top_keywords,
-        "videos_per_channel": chart_videos_per_channel,
     }
 
     charts: dict[str, str] = {}

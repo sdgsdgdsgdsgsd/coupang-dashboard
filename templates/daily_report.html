@@ -110,16 +110,6 @@
   </div>
   {% endif %}
 
-  <!-- CHART: SENTIMENT -->
-  {% if charts.sentiment %}
-  <div class="card">
-    <h2>📈 채널별 시장 감성 분석</h2>
-    <img class="chart-img" src="data:image/png;base64,{{ charts.sentiment }}" alt="시장 감성 차트">
-    <div class="chart-label">채널별 긍정 / 중립 / 부정 비율</div>
-    <div style="font-size:13px;color:#4B5563;line-height:1.6;">{{ market_sentiment.reasoning }}</div>
-  </div>
-  {% endif %}
-
   <!-- CHART: TOPIC -->
   {% if charts.topic %}
   <div class="card">
@@ -135,14 +125,6 @@
     <h2>🔤 핵심 키워드 Top 10</h2>
     <img class="chart-img" src="data:image/png;base64,{{ charts.keywords }}" alt="키워드 차트">
     <div class="chart-label">오늘 유튜버들이 가장 많이 언급한 키워드</div>
-  </div>
-  {% endif %}
-
-  <!-- CHART: VIDEOS PER CHANNEL -->
-  {% if charts.videos_per_channel %}
-  <div class="card">
-    <h2>📺 채널별 신규 영상 수</h2>
-    <img class="chart-img" src="data:image/png;base64,{{ charts.videos_per_channel }}" alt="채널별 영상 수 차트">
   </div>
   {% endif %}
 

@@ -35,10 +35,11 @@ def build_analysis_prompt(videos: list[dict], date_str: str) -> str:
     for i, v in enumerate(videos, 1):
         parts.append(f"\n## [{i}] {v.get('channel_name', '')} — {v.get('title', '')}")
         parts.append(f"URL: {v.get('url', '')}")
+        parts.append(f"조회수: {v.get('views', 0)}")
         if v.get("description"):
-            parts.append(f"설명: {v['description'][:200]}")
+            parts.append(f"설명: {v['description'][:300]}")
         if v.get("transcript"):
-            parts.append(f"자막(일부): {v['transcript'][:800]}")
+            parts.append(f"자막: {v['transcript'][:3000]}")
 
     parts.append("""
 ---
@@ -72,6 +73,36 @@ def build_analysis_prompt(videos: list[dict], date_str: str) -> str:
     return "\n".join(parts)
 
 
+def _parse_json_response(text: str) -> dict:
+    text = text.strip()
+    # ```json ... ``` 블록 처리
+    if "```" in text:
+        parts = text.split("```")
+        for part in parts:
+            part = part.strip()
+            if part.startswith("json"):
+                part = part[4:].strip()
+            if part.startswith("{"):
+                try:
+                    return json.loads(part)
+                except json.JSONDecodeError:
+                    pass
+    # 직접 파싱
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+    # 중괄호 범위 추출
+    start = text.find("{")
+    end = text.rfind("}") + 1
+    if start >= 0 and end > start:
+        try:
+            return json.loads(text[start:end])
+        except json.JSONDecodeError:
+            pass
+    return {}
+
+
 def analyze_videos(date_str: str | None = None) -> str:
     """raw_videos JSON 분석 → report JSON 저장. 저장 경로 반환."""
     if date_str is None:
@@ -85,8 +116,20 @@ def analyze_videos(date_str: str | None = None) -> str:
         raw_data = json.load(f)
 
     videos = raw_data.get("videos", [])
+
+    report_path = os.path.join(DATA_DIR, f"report_{date_str}.json")
+
     if not videos:
-        raise ValueError("분석할 영상이 없습니다.")
+        print("분석할 영상이 없습니다. 빈 리포트 저장.")
+        empty_report = {
+            "date": date_str, "total_videos": 0, "channels_covered": 0,
+            "key_insights": [], "market_sentiment": {}, "topic_distribution": {},
+            "top_keywords": {}, "risk_factors": [], "investment_opportunities": [],
+            "policy_issues": [], "channel_summaries": [], "kakao_message": "",
+        }
+        with open(report_path, "w", encoding="utf-8") as f:
+            json.dump(empty_report, f, ensure_ascii=False, indent=2)
+        return report_path
 
     api_key = os.getenv("ANTHROPIC_API_KEY")
     if not api_key:
@@ -95,7 +138,7 @@ def analyze_videos(date_str: str | None = None) -> str:
     client = Anthropic(api_key=api_key)
     prompt = build_analysis_prompt(videos, date_str)
 
-    print("Claude API 분석 중...")
+    print(f"Claude API 분석 중... ({len(videos)}개 영상)")
     response = client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=4096,
@@ -103,19 +146,17 @@ def analyze_videos(date_str: str | None = None) -> str:
         messages=[{"role": "user", "content": prompt}],
     )
 
-    raw_json = response.content[0].text.strip()
-    # JSON 블록 파싱 (```json ... ``` 형식 처리)
-    if raw_json.startswith("```"):
-        raw_json = raw_json.split("```")[1]
-        if raw_json.startswith("json"):
-            raw_json = raw_json[4:]
+    raw_json = response.content[0].text
+    report = _parse_json_response(raw_json)
 
-    report = json.loads(raw_json)
+    if not report:
+        print("경고: JSON 파싱 실패. 빈 리포트로 저장합니다.")
+        report = {}
+
     report["date"] = date_str
     report["total_videos"] = len(videos)
-    report["channels_covered"] = len({v["channel_name"] for v in videos})
+    report["channels_covered"] = len({v.get("channel_name", "") for v in videos})
 
-    report_path = os.path.join(DATA_DIR, f"report_{date_str}.json")
     with open(report_path, "w", encoding="utf-8") as f:
         json.dump(report, f, ensure_ascii=False, indent=2)
 
