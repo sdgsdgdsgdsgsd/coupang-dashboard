@@ -1,0 +1,91 @@
+{
+  "crawled_at": "2026-07-01T13:55:13.369153",
+  "date": "20260701",
+  "total_videos": 7,
+  "videos": [
+    {
+      "channel_name": "더라이터송",
+      "channel_url": "https://www.youtube.com/@thewriter-song",
+      "video_id": "j6P84QR8IMI",
+      "title": "여기서 고르면 됩니다",
+      "url": "https://www.youtube.com/watch?v=j6P84QR8IMI",
+      "upload_date": "2026-06-30T08:18:11.000Z",
+      "views": null,
+      "likes": 38,
+      "description": "",
+      "transcript": ""
+    },
+    {
+      "channel_name": "더라이터송",
+      "channel_url": "https://www.youtube.com/@thewriter-song",
+      "video_id": "ty9bY5lVyFE",
+      "title": "노원구 월세 100만원 시대",
+      "url": "https://www.youtube.com/watch?v=ty9bY5lVyFE",
+      "upload_date": "2026-06-30T22:47:13.000Z",
+      "views": 47267,
+      "likes": 856,
+      "description": "",
+      "transcript": ""
+    },
+    {
+      "channel_name": "부익남TV",
+      "channel_url": "https://www.youtube.com/@buiknam_tv",
+      "video_id": "49GRr9bSEtw",
+      "title": "EP16. 양천구 입지 분석 및 투자 가이드",
+      "url": "https://www.youtube.com/watch?v=49GRr9bSEtw",
+      "upload_date": "2026-06-29T00:04:31.000Z",
+      "views": null,
+      "likes": 1,
+      "description": "",
+      "transcript": ""
+    },
+    {
+      "channel_name": "부익남TV",
+      "channel_url": "https://www.youtube.com/@buiknam_tv",
+      "video_id": "IJ9gA-H8Mfc",
+      "title": "언론은 '이걸' 보도 안해요, 지금 부동산 시장 이렇습니다 [박원갑 위원 풀버전]",
+      "url": "https://www.youtube.com/watch?v=IJ9gA-H8Mfc",
+      "upload_date": "2026-06-29T08:00:12.000Z",
+      "views": 26307,
+      "likes": 419,
+      "description": "",
+      "transcript": ""
+    },
+    {
+      "channel_name": "부익남TV",
+      "channel_url": "https://www.youtube.com/@buiknam_tv",
+      "video_id": "EK7olTIiMRw",
+      "title": "앞으로 부동산 시장이 정말 무섭게 변하는 이유",
+      "url": "https://www.youtube.com/watch?v=EK7olTIiMRw",
+      "upload_date": "2026-06-30T00:12:07.000Z",
+      "views": null,
+      "likes": 5,
+      "description": "",
+      "transcript": ""
+    },
+    {
+      "channel_name": "부익남TV",
+      "channel_url": "https://www.youtube.com/@buiknam_tv",
+      "video_id": "Ipkmml0hiis",
+      "title": "\"도저히 막을 수 없습니다\" 집값 상승하는 진짜 이유 [김준영 소장 1부]",
+      "url": "https://www.youtube.com/watch?v=Ipkmml0hiis",
+      "upload_date": "2026-06-30T10:00:19.000Z",
+      "views": 53096,
+      "likes": 588,
+      "description": "",
+      "transcript": ""
+    },
+    {
+      "channel_name": "부익남TV",
+      "channel_url": "https://www.youtube.com/@buiknam_tv",
+      "video_id": "sSDp2Z3mAW4",
+      "title": "심상치 않은 비트코인 급락, 팔아야 하나 고민되면 보세요 [강승구 부대표 1부]",
+      "url": "https://www.youtube.com/watch?v=sSDp2Z3mAW4",
+      "upload_date": "2026-07-01T10:00:26.000Z",
+      "views": 5500,
+      "likes": 190,
+      "description": "",
+      "transcript": ""
+    }
+  ]
+}
