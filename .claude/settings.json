@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "mcp__Gmail__create_draft",
-      "mcp__PlayMCP__KakaotalkChat-MemoChat"
+      "mcp__PlayMCP__KakaotalkChat-MemoChat",
+      "mcp__126d8c86-ae01-42ad-a68c-8c50069a5773__create_draft",
+      "mcp__e8b0cb06-db6f-4f9e-bf35-8fe3e718d154__KakaotalkChat-MemoChat"
     ]
   }
 }

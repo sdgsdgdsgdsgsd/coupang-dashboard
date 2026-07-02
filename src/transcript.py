@@ -58,6 +58,16 @@ def enrich_with_transcripts(raw_path: str, languages: list[str] | None = None) -
         status = f"{len(transcript)}자" if transcript else "없음"
         print(f"           → {status}")
 
+    before_count = len(videos)
+    videos = [
+        v for v in videos
+        if v.get("transcript") or v.get("description")
+    ]
+    removed = before_count - len(videos)
+    if removed:
+        print(f"자막·설명 없는 영상 제거: {removed}개 (남은 영상: {len(videos)}개)")
+
+    data["videos"] = videos
     with open(raw_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
