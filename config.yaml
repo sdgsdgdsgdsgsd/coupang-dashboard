@@ -5,10 +5,14 @@ channels:
     url: "https://www.youtube.com/@thewriter-song"
   - name: "부익남TV"
     url: "https://www.youtube.com/@buiknam_tv"
+  - name: "KB부동산"
+    url: "https://www.youtube.com/@kbland/videos"
+  - name: "월급쟁이부자들"
+    url: "https://www.youtube.com/@weolbu_official"
 
 settings:
   lookback_hours: 24          # 최근 24시간 이내 영상만 수집
-  max_videos_per_channel: 5   # 채널당 최대 영상 수
+  max_videos_per_channel: 3   # 채널당 최대 영상 수 (채널 4개로 늘어 메시지 과부하 방지)
   apify_actor: "streamers/youtube-scraper"
   transcript_languages:
     - "ko"

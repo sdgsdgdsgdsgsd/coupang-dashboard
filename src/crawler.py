@@ -132,7 +132,8 @@ def crawl_channel(client: ApifyClient, channel: dict, config: dict) -> list[dict
             video_id = extract_video_id(item.get("url", "") or item.get("id", ""))
             recent_videos.append(
                 {
-                    "channel_name": channel["name"],
+                    # Apify가 실제 채널명을 반환하면 우선 사용, 없으면 config.yaml 이름으로 폴백
+                    "channel_name": item.get("channelName") or channel["name"],
                     "channel_url": channel["url"],
                     "video_id": video_id,
                     "title": item.get("title", ""),
