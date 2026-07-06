@@ -1,10 +1,17 @@
 {
   "permissions": {
     "allow": [
-      "mcp__Gmail__create_draft",
       "mcp__PlayMCP__KakaotalkChat-MemoChat",
-      "mcp__126d8c86-ae01-42ad-a68c-8c50069a5773__create_draft",
-      "mcp__e8b0cb06-db6f-4f9e-bf35-8fe3e718d154__KakaotalkChat-MemoChat"
+      "mcp__PlayMCP__kakaoRealEstate-get_market_price",
+      "mcp__PlayMCP__kakaoRealEstate-search_property",
+      "mcp__PlayMCP__AptInfo-get_region_code",
+      "mcp__PlayMCP__AptInfo-get_apt_list",
+      "mcp__PlayMCP__AptInfo-get_apt_price",
+      "mcp__PlayMCP__AptInfo-get_apt_info",
+      "mcp__PlayMCP__AptInfo-get_apt_info_bulk",
+      "mcp__PlayMCP__NaverSearch-search_news",
+      "mcp__PlayMCP__NaverSearch-get_current_korean_time",
+      "mcp__github__get_file_contents"
     ]
   }
 }
