@@ -24,8 +24,14 @@ def fetch_transcript(video_id: str, languages: list[str]) -> str:
     if not video_id:
         return ""
     try:
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=languages)
-        text = " ".join(entry["text"] for entry in transcript_list)
+        if hasattr(YouTubeTranscriptApi, "get_transcript"):
+            # youtube-transcript-api < 1.0
+            entries = YouTubeTranscriptApi.get_transcript(video_id, languages=languages)
+            text = " ".join(entry["text"] for entry in entries)
+        else:
+            # youtube-transcript-api >= 1.0: 인스턴스 fetch() 사용
+            fetched = YouTubeTranscriptApi().fetch(video_id, languages=languages)
+            text = " ".join(snippet.text for snippet in fetched)
         return text[:MAX_TRANSCRIPT_CHARS]
     except (TranscriptsDisabled, NoTranscriptFound):
         return ""
