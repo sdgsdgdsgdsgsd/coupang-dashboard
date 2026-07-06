@@ -40,7 +40,8 @@ jobs:
       - name: Step 3 — Claude API 1차 분석
         continue-on-error: true   # 키 미설정/실패해도 raw 데이터 커밋은 진행
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # GitHub Secret 이름: ANTHROPIC_CONSOLE → 스크립트가 읽는 ANTHROPIC_API_KEY로 매핑
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_CONSOLE }}
         run: python src/analyzer.py
 
       - name: Step 4 — 데이터 레포 커밋 (카카오톡 AI분석용)
